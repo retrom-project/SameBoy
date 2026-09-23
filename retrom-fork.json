@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "forkRepository": "https://github.com/retrom-project/SameBoy",
+  "defaultBranch": "retrom/g5619abdb01ce",
+  "upstreamMirrorBranch": "SameDuck",
+  "upstreams": [
+    {
+      "role": "core",
+      "repository": "https://github.com/LIJI32/SameBoy",
+      "refType": "COMMIT",
+      "ref": "5619abdb01cee6bedb47599cdb5532c318443b52",
+      "commit": "5619abdb01cee6bedb47599cdb5532c318443b52"
+    }
+  ],
+  "adapterAbi": "emulatorjs-state-v1",
+  "releaseAssets": [
+    "sameduck-wasm.data",
+    "LICENSE",
+    "source.tar.gz",
+    "rpg-runtime-release.json"
+  ]
+}

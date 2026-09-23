@@ -176,7 +176,8 @@ else ifneq (,$(findstring qnx,$(platform)))
 else ifeq ($(platform), emscripten)
    TARGET := $(TARGET_NAME)_libretro_emscripten.bc
    fpic := -fPIC
-   SHARED := -shared -Wl,--version-script=$(CORE_DIR)/libretro/link.T -Wl,--no-undefined
+   STATIC_LINKING := 1
+   AR := emar
 else ifeq ($(platform), vita)
    TARGET := $(TARGET_NAME)_libretro_vita.a
    CC = arm-vita-eabi-gcc
@@ -343,4 +344,3 @@ clean:
 	rm -f $(OBJECTS) $(TARGET)
 
 .PHONY: clean
-
