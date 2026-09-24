@@ -98,7 +98,7 @@ static void handle_buttons(GB_gameboy_t *gb)
                     if (push_a_twice) {
                         GB_set_key_state(gb, b_is_confirm? GB_KEY_B: GB_KEY_A, true);
                     }
-                    else if (gb->boot_rom_finished) {
+                    else { /* SameDuck starts directly in the cartridge; it has no boot ROM state. */
                         GB_set_key_state(gb, GB_KEY_DOWN, true);
                     }
                     break;
@@ -142,9 +142,6 @@ static void vblank(GB_gameboy_t *gb)
             fwrite(&bmp_header, 1, sizeof(bmp_header), f);
             fwrite(&bitmap, 1, sizeof(bitmap), f);
             fclose(f);
-            if (!gb->boot_rom_finished) {
-                GB_log(gb, "Boot ROM did not finish.\n");
-            }
             if (is_screen_blank) {
                 GB_log(gb, "Game probably stuck with blank screen. \n");
             }
@@ -437,4 +434,3 @@ int main(int argc, char **argv)
 #endif
     return 0;
 }
-
