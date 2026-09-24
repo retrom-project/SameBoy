@@ -1,33 +1,21 @@
-set -e
+#!/usr/bin/env bash
+set -euo pipefail
 
-./build/bin/tester/sameboy_tester --jobs 5 \
-      --length 40 .github/actions/cgb_sound.gb \
-      --length 10  .github/actions/cgb-acid2.gbc \
-      --length 10  .github/actions/dmg-acid2.gb \
---dmg --length 40 .github/actions/dmg_sound-2.gb \
---dmg --length 20 .github/actions/oam_bug-2.gb
+# Max Pirate's Mega Duck build is MIT licensed. Pin its source commit and bytes.
+test -x build/bin/tester/sameduck_tester
+work=$(mktemp -d)
+trap 'rm -rf "$work"' EXIT
+curl -fsSL --retry 3 \
+  https://raw.githubusercontent.com/bbbbbr/MaxPirate_megaduck/742b498e08c1eafae5fc4fb8b5cd481288f11c1f/build/duck/MaxPirate.duck \
+  -o "$work/maxpirate.duck"
+printf '%s  %s\n' 3ae8119cd892eaa4685a7a45393046da658dd90dbe990be0eec8260072caca06 "$work/maxpirate.duck" |
+  shasum -a 256 -c -
 
-mv .github/actions/dmg{,-mode}-acid2.bmp
-
-./build/bin/tester/sameboy_tester \
---dmg --length 10  .github/actions/dmg-acid2.gb 
-
-set +e
-
-FAILED_TESTS=`
-shasum .github/actions/*.bmp | grep -q -E -v \(\
-44ce0c7d49254df0637849c9155080ac7dc3ef3d\ \ .github/actions/cgb-acid2.bmp\|\
-dbcc438dcea13b5d1b80c5cd06bda2592cc5d9e0\ \ .github/actions/cgb_sound.bmp\|\
-0caadf9634e40247ae9c15ff71992e8f77bbf89e\ \ .github/actions/dmg-acid2.bmp\|\
-c50daed36c57a8170ff362042694786676350997\ \ .github/actions/dmg-mode-acid2.bmp\|\
-c9e944b7e01078bdeba1819bc2fa9372b111f52d\ \ .github/actions/dmg_sound-2.bmp\|\
-f0172cc91867d3343fbd113a2bb98100074be0de\ \ .github/actions/oam_bug-2.bmp\
-\)`
-
-if [ -n "$FAILED_TESTS" ] ; then
-    echo "Failed the following tests:"
-    echo $FAILED_TESTS | tr " " "\n" | grep -q -o -E "[^/]+\.bmp" | sed s/.bmp// | sort
-    exit 1
-fi
-
-echo Passed all tests
+cp "$work/maxpirate.duck" "$work/title.duck"
+cp "$work/maxpirate.duck" "$work/started.duck"
+build/bin/tester/sameduck_tester --length 10 "$work/title.duck"
+build/bin/tester/sameduck_tester --start --length 10 "$work/started.duck"
+printf '%s  %s\n' eee28da7f37d5f331f61700df3d74a6b4b059cb1f92dfc410e63d5129b183eed "$work/title.bmp" |
+  shasum -a 256 -c -
+printf '%s  %s\n' a0fbcda87ffc0270db73a9332c4413834d306fd10c66373cd88317562cb8fa0d "$work/started.bmp" |
+  shasum -a 256 -c -

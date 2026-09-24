@@ -6,7 +6,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-latest, ubuntu-latest, ubuntu-16.04]
+        os: [macos-latest, ubuntu-latest, ubuntu-22.04]
         cc: [gcc, clang]
         include:
         - os: macos-latest
@@ -17,7 +17,7 @@ jobs:
           cc: gcc
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Install deps
         shell: bash
         run: |
@@ -30,7 +30,7 @@ jobs:
         run: |
           ./.github/actions/sanity_tests.sh
       - name: Upload binaries
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v4
         with:
           name: sameboy-canary-${{ matrix.os }}-${{ matrix.cc }}
           path: build/bin
